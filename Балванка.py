@@ -1,5 +1,6 @@
 import random
 import json
+import os
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.scrollview import ScrollView
@@ -9,9 +10,21 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup
 
+# Определение пути к файлу JSON
+script_dir = os.path.dirname(os.path.abspath(__file__))
+json_path = os.path.join(script_dir, 'GOGO.json')
+
+# Проверка существования файла
+if not os.path.exists(json_path):
+    raise FileNotFoundError(f"Файл {json_path} не найден!")
+
 # Загрузка данных из файла
-with open('GOGO.json', 'r', encoding='utf-8') as f:
-    wort = json.load(f)
+try:
+    with open(json_path, 'r', encoding='utf-8') as f:
+        wort = json.load(f)
+except json.JSONDecodeError as e:
+    print(f"Ошибка парсинга JSON: {e}")
+    exit(1)
 
 NUM_WORDS = 10
 x = random.sample(list(wort.items()), NUM_WORDS)
